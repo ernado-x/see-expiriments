@@ -1,23 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--[if lt IE 9]>
-<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-    <link rel="shortcut icon" href="">
+    <title>Server Sent Event Sample</title>
 </head>
 
 <body>
+    <p>Open your web browser's console to see the eventing.</p>
+    <button id="middleware">Middleware</button>
+    <button id="controller">Controller</button>
+    <script type="text/javascript">
+    
+        var source;
+        
+        function listenForServerEvents(url)
+        {
+            if (source) source.close();
+            
+            source = new EventSource(url);
+            
+            source.onmessage = function (event) {
+                console.log('onmessage: ' + event.data);
+            };
 
-  
-    <!-- SCRIPTS -->
-    <script src="core.js"></script>
-    <!-- Example: <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+            source.onopen = function(event) {
+                console.log('onopen');
+            };
+
+            source.onerror = function(event) {
+                console.log('onerror');
+            };
+        }
+    
+        document.getElementById("middleware").addEventListener("click", function ()
+        {
+            listenForServerEvents("sse");
+        });
+        
+        document.getElementById("controller").addEventListener("click", function ()
+        {
+            listenForServerEvents("http://localhost:5000/api/sse");
+        });
+        
+        //listenForServerEvents('sse');
+        
+    </script>
 </body>
 
 </html>

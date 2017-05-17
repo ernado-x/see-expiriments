@@ -1,15 +1,33 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    public class EventController : Controller
+    [Route("/api/sse")]
+    public class ServerSentEventController
     {
-        // GET api/values
-        [HttpGet]
-        public bool Get([FromQuery]int clientId, [FromQuery]string message)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ServerSentEventController(IHttpContextAccessor httpContextAccessor)
         {
-            return true;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        [HttpGet]
+        public async Task Get()
+        {
+            var response = _httpContextAccessor.HttpContext.Response;
+            response.Headers.Add("Content-Type", "text/event-stream");
+
+            for (var i = 0; true; ++i)
+            {
+                await response.WriteAsync($"data: Controller {i} at {DateTime.Now}\r\r");
+
+                response.Body.Flush();
+                await Task.Delay(5 * 1000);
+            }
         }
     }
 }
