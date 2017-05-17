@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using API.Application;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,17 +18,23 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public async Task Get([FromQuery]int clientId)
         {
             var response = _httpContextAccessor.HttpContext.Response;
             response.Headers.Add("Content-Type", "text/event-stream");
 
-            for (var i = 0; true; ++i)
+            while (true)
             {
-                await response.WriteAsync($"data: Controller {i} at {DateTime.Now}\r\r");
+                var messages = MessageManager.Current.GetMessages(clientId);
 
-                response.Body.Flush();
-                await Task.Delay(5 * 1000);
+                if (messages.Any())
+                {
+                    foreach (var m in messages)
+                    {
+                        await response.WriteAsync($"data: [{m}] at {DateTime.Now}\r\r");
+                        response.Body.Flush();
+                    }
+                }
             }
         }
     }
