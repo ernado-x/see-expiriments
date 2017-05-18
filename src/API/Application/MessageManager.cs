@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Application
 {
@@ -20,41 +21,40 @@ namespace API.Application
             }
         }
 
-
-        private List<Event> _events;
+        private List<Subscription> _subscriptions;
+        private List<Channel> _channels;
 
         public MessageManager()
         {
-            _events = new List<Event>();
+            _channels = new List<Channel>();
+            _subscriptions = new List<Subscription>();
         }
 
-        public void AddMessage(int clientId, string message)
+        public void SendMessageToClient(int clientId, string message)
         {
-            _events.Add(new Event(clientId, message));
-        }
-
-        public IEnumerable<string> GetMessages(int clientId)
-        {
-            var events = _events.Where(o => o.ClientId == clientId).ToList();
-
-            foreach (var e in events)
+            var e = new Event
             {
-                _events.Remove(e);
+                ClientId = clientId,
+                Data = message
+            };
+
+            var subscriptions = _subscriptions.Where(o => o.ClientId == clientId).ToList();
+
+            foreach (var s in subscriptions)
+            {
+                var channel = _channels.SingleOrDefault( o => o.Id == s.ChannelId);
+                channel.SendToChannel(e);
             }
-
-            return events.Select(o => o.Data).ToList();
         }
-    }
 
-    class Event
-    {
-        public Event(int clientId, string data)
+        public void RegisterChannel(Guid channelId, Action<Event> action)
         {
-            ClientId = clientId;
-            Data = data;
+            _channels.Add(new Channel(channelId, action));
         }
 
-        public int ClientId { get; set; }
-        public string Data { get; set; }
+        public void SubscribeClientToChannel(Guid channelId, int clientId)
+        {
+            _subscriptions.Add(new Subscription(channelId, clientId));
+        }
     }
 }

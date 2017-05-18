@@ -10,81 +10,13 @@
 
 <body>
     <p>Open your web browser's console to see the eventing.</p>
-    <button id="middleware">Middleware</button>
-    <button id="controller_1">Controller 1</button>
-    <button id="controller_2">Controller 2</button>
 
-    <br />
-    <input type="text" id="message" />
-    <button id="send-to-controller-1">Send to client 1</button>
-    <button id="send-to-controller-2">Send to client 2</button>
-
-    <script type="text/javascript">
-        var source;
-
-        function listenForServerEvents(url) {
-
-            if (source) {
-                source.close();
-            }
-
-            source = new EventSource(url);
-
-            source.onmessage = function (event) {
-                console.log('onmessage: ' + event.data);
-            };
-
-            source.onopen = function (event) {
-                console.log('onopen');
-            };
-
-            source.onerror = function (event) {
-                console.log('onerror');
-            };
-        }
-
-        document.getElementById("middleware").addEventListener("click", function () {
-            listenForServerEvents("sse");
-        });
-
-        document.getElementById("controller_1").addEventListener("click", function () {
-            listenForServerEvents("http://localhost:5000/api/sse?clientId=1");
-        });
-
-        document.getElementById("controller_2").addEventListener("click", function () {
-            listenForServerEvents("http://localhost:5000/api/sse?clientId=2");
-        });
-
-        document.getElementById("send-to-controller-1").addEventListener("click", function () {
-            sendMessageToClient(1);
-        });
-
-        document.getElementById("send-to-controller-2").addEventListener("click", function () {
-            sendMessageToClient(2);
-        });
-
-        function sendMessageToClient(clientId) {
-
-            var message = document.getElementById("message").value;
-            var url = 'http://localhost:5000/api/messages?clientId=' + clientId + '&message=' + message;
-
-            httpGetAsync(url);
-
-        }
-
-        function httpGetAsync(theUrl, callback) {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState == 4 && xmlHttp.status == 200 && !!callback) {
-                    callback(xmlHttp.responseText);
-                }
-            }
-            xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-            xmlHttp.send(null);
-        }
-
-        //listenForServerEvents('sse');
-    </script>
+    <button id="create-clients">Create clients</button>
+    <script src="js/common.js"></script>
+    <script src="js/client.js"></script>
+    <script src="js/channel.js"></script>
+    <script src="js/core.js"></script>
 </body>
 
+</html>
 </html>

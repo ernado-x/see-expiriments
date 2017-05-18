@@ -10,12 +10,13 @@ namespace API.Controllers
     [Route("api/messages")]
     public class MessagesController : Controller
     {
-        // GET api/values
         [HttpGet]
-        public int Get([FromQuery]int clientId, [FromQuery]string message)
+        [Route("send")]
+        public async Task<string> SendMessageToClient([FromQuery]int clientId, [FromQuery]string message)
         {
-            MessageManager.Current.AddMessage(clientId, message);
-            return 0;
+            MessageManager.Current.SendMessageToClient(clientId, message);
+
+            return await Task.FromResult($"Message sent to {clientId}");
         }
     }
 }
