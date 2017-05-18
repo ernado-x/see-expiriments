@@ -1,4 +1,4 @@
-var clientCount = 100;
+var clientCount = 1000;
 
 /**
  * Create new GUID
