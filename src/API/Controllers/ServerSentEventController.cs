@@ -33,10 +33,11 @@ namespace API.Controllers
                 };
                 
                 var json = JsonConvert.SerializeObject(e, settings);
+
                 await response.WriteAsync($"data: {json}\r\r");
 
-                response.Body.Flush();
-            });
+                //response.Body.Flush();
+            });           
 
             while (true)
             {

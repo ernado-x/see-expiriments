@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,13 +22,17 @@ namespace API.Application
             }
         }
 
-        private readonly List<Subscription> _subscriptions;
-        private readonly List<Channel> _channels;
+        //private readonly List<Subscription> _subscriptions;
+        private readonly ConcurrentBag<Subscription> _subscriptions;
+        // private readonly List<Channel> _channels;
+        private readonly ConcurrentBag<Channel> _channels;
 
         public MessageManager()
         {
-            _channels = new List<Channel>();
-            _subscriptions = new List<Subscription>();
+            //_channels = new List<Channel>();
+            _channels = new ConcurrentBag<Channel>();
+            //_subscriptions = new List<Subscription>();
+            _subscriptions = new ConcurrentBag<Subscription>();
         }
 
         public void SendDataToClient(int clientId, object data)
@@ -45,7 +50,7 @@ namespace API.Application
 
         public void RegisterChannel(Guid channelId, Action<Event> action)
         {
-            var exist = _channels.Any(o => o.Id == channelId);
+            var exist = _channels.ToList().Any(o => o.Id == channelId);
             
             if (!exist)
             {
@@ -54,7 +59,7 @@ namespace API.Application
         }
 
         public void SubscribeClientToChannel(Guid channelId, int clientId)
-        {
+        {            
             var exist = _subscriptions.Any(o => o.ChannelId == channelId && o.ClientId == clientId);
 
             if (!exist)
