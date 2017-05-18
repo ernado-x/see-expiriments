@@ -21,8 +21,8 @@ namespace API.Application
             }
         }
 
-        private List<Subscription> _subscriptions;
-        private List<Channel> _channels;
+        private readonly List<Subscription> _subscriptions;
+        private readonly List<Channel> _channels;
 
         public MessageManager()
         {
@@ -30,31 +30,37 @@ namespace API.Application
             _subscriptions = new List<Subscription>();
         }
 
-        public void SendMessageToClient(int clientId, string message)
+        public void SendDataToClient(int clientId, object data)
         {
-            var e = new Event
-            {
-                ClientId = clientId,
-                Data = message
-            };
+            var e = new Event(clientId, data);
 
             var subscriptions = _subscriptions.Where(o => o.ClientId == clientId).ToList();
 
             foreach (var s in subscriptions)
             {
-                var channel = _channels.SingleOrDefault( o => o.Id == s.ChannelId);
+                var channel = _channels.SingleOrDefault(o => o.Id == s.ChannelId);
                 channel.SendToChannel(e);
             }
         }
 
         public void RegisterChannel(Guid channelId, Action<Event> action)
         {
-            _channels.Add(new Channel(channelId, action));
+            var exist = _channels.Any(o => o.Id == channelId);
+            
+            if (!exist)
+            {
+                _channels.Add(new Channel(channelId, action));
+            }
         }
 
         public void SubscribeClientToChannel(Guid channelId, int clientId)
         {
-            _subscriptions.Add(new Subscription(channelId, clientId));
+            var exist = _subscriptions.Any(o => o.ChannelId == channelId && o.ClientId == clientId);
+
+            if (!exist)
+            {
+                _subscriptions.Add(new Subscription(channelId, clientId));
+            }
         }
     }
 }

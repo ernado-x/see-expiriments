@@ -6,12 +6,17 @@ namespace API.Application
     {
         public Guid Id { get; set; }
 
-        public Action<Event> SendToChannel;
+        public readonly Action<Event> SendToChannel;
 
         public Channel(Guid channelId, Action<Event> action)
         {
             Id = channelId;
             SendToChannel = action;
+        }
+
+        public override string ToString()
+        {
+            return $"{Id}";
         }
     }
 }
