@@ -7,7 +7,7 @@ function Channel(endpoint) {
 
     self.id = null;
 
-    self.apiEndpoint =  endpoint;
+    self.apiEndpoint = endpoint;
 
     self.subscribes = [];
 
@@ -16,13 +16,14 @@ function Channel(endpoint) {
     /**
      * 
      */
-    self.subscribe = function (id, callback, onClientSubscribe) {
-        var client = new Client(id, callback);
-
+    self.subscribe = function (client) {
         self.subscribes.push(client);
 
         var url = this.apiEndpoint + 'subscribe?clientId=' + client.id + '&channelId=' + this.id;
-        httpGetAsync(url, onClientSubscribe);
+        
+        httpGetAsync(url, function () {
+            console.info('Client[' + client.id + '] subscribed to events on channel ' + self.id);
+        });
     };
 
 

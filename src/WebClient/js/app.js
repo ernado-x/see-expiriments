@@ -3,7 +3,7 @@ _channel.init();
 
 var eventCount = 0;
 
-document.getElementById("create-clients").addEventListener("click", function () {
+document.getElementById("clean").addEventListener("click", function () {
     var out = document.getElementById("out");
     out.innerHTML = '';
 });
@@ -12,21 +12,13 @@ document.getElementById("create-clients").addEventListener("click", function () 
 
     for (var i = 1; i <= clientCount; i++) {
 
-        var client = {
-            id: i,
-            callback: function (data) {
-                eventCount++;
-                document.getElementById("event-count").innerText = eventCount;
-                //var out = document.getElementById("out");
-                //out.innerHTML = out.innerHTML + '<p> Client[' + this.id + '] received data: ' + data + '</p>';
-            }
-        };
+        var client = new Client(i, function (data) {
+            eventCount++;
+            console.log('Received data: ' + data);
+            document.getElementById("event-count").innerText = eventCount;            
+        });
 
-        var onClientSubscribe = function () {
-            console.log('Client[' + client.id + '] subscribed to events on channel ' + _channel.id);
-        }
-        _channel.subscribe(client.id, client.callback, onClientSubscribe);
-
+        _channel.subscribe(client);
     }
 
 });
