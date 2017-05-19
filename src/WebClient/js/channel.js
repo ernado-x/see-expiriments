@@ -44,9 +44,12 @@ function Channel(endpoint) {
         self.eventSource.onerror = function (obj) {
             console.log('onerror [' + obj + ']');
 
+            if (sel.eventSource.readyState == EventSource.CLOSED) {
+
+            }
             if (self.eventSource.readyState == 2) {
                 console.log('try reconnect...');
-                setTimeout(self.init, 5000);
+                setTimeout(self.init, 1000);
             }
         };
     }
