@@ -22,7 +22,7 @@ function Channel(endpoint) {
                 client.callback(obj);
             }
             catch (exception) {
-                console.warn('Exception during JSON.parse: ', exception);
+                console.warn('Exception during JSON.parse: ', exception, e);
             }
         }, false);
 
