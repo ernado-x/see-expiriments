@@ -25,19 +25,7 @@ namespace API.Controllers
             var response = _httpContextAccessor.HttpContext.Response;
             response.Headers.Add("Content-Type", "text/event-stream");
 
-            MessageManager.Current.RegisterChannel(channelId, async (e) =>
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                };
-                
-                var json = JsonConvert.SerializeObject(e, settings);
-
-                await response.WriteAsync($"data: {json}\r\r");
-
-                //response.Body.Flush();
-            });           
+            MessageManager.Current.RegisterChannel(channelId, response);
 
             while (true)
             {
@@ -46,6 +34,12 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        private static Task WriteSseEventFieldAsync(HttpResponse response, string field, string data)
+        {
+            return response.WriteAsync($"{field}: {data}\n\n");
+        }
+
 
         [HttpGet]
         [Route("subscribe")]

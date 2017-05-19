@@ -9,18 +9,20 @@ function Channel(endpoint) {
 
     self.apiEndpoint = endpoint;
 
-    self.subscribes = [];
-
     self.eventSource = null;
 
     /**
      * 
      */
     self.subscribe = function (client) {
-        self.subscribes.push(client);
+
+        self.eventSource.addEventListener(client.id, function (e) {
+            var obj = JSON.parse(e.data);
+            client.callback(obj);
+        }, false);
 
         var url = this.apiEndpoint + 'subscribe?clientId=' + client.id + '&channelId=' + this.id;
-        
+
         httpGetAsync(url, function () {
             console.info('Client[' + client.id + '] subscribed to events on channel ' + self.id);
         });
@@ -32,14 +34,7 @@ function Channel(endpoint) {
         self.eventSource = new EventSource(self.apiEndpoint + '?channelId=' + self.id);
 
         self.eventSource.onmessage = function (obj) {
-
-            var event = JSON.parse(obj.data);
-
-            var clients = self.subscribes.filter(function (c) { return c.id == event.clientId; });
-
-            clients.forEach(function (client) {
-                client.callback(event.data);
-            });
+            console.log('onmessage [' + obj + ']');
         };
 
         self.eventSource.onopen = function (obj) {
