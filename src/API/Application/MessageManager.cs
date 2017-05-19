@@ -36,7 +36,7 @@ namespace API.Application
 
         public async Task SendDataToClient(int clientId, object data)
         {
-            var e = new Event(clientId, data);
+            var e = Event.CreateEvent(clientId, data);
 
             var subscriptions = _subscriptions.Where(o => o.ClientId == clientId).ToList();
 

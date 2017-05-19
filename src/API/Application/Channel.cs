@@ -30,7 +30,8 @@ namespace API.Application
             var json = JsonConvert.SerializeObject(e.Data, _serializerSettings);
 
             await _response.WriteAsync($"event: {e.ClientId}\n");
-            await _response.WriteAsync($"data: {json}\n\n");
+            await _response.WriteAsync($"data: {json}\n");
+            await _response.WriteAsync($"id: {e.Id}\n\n");
 
             _response.Body.Flush();
         }

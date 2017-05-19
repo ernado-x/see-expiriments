@@ -2,18 +2,26 @@ namespace API.Application
 {
     public class Event
     {
+        private static int _id = 1;
+
+        public static Event CreateEvent(int clientId, object data)
+        {
+            return new Event
+            {
+                Id = _id++,
+                ClientId = clientId,
+                Data = data
+            };
+        }
+
+        public int Id { get; set; }
         public int ClientId { get; set; }
         public object Data { get; set; }
 
-        public Event()
+        private Event()
         {
         }
 
-        public Event(int clientId, object data)
-        {
-            ClientId = clientId;
-            Data = data;
-        }        
 
         public override string ToString()
         {
