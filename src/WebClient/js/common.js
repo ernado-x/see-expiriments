@@ -1,6 +1,6 @@
 var clientCount = 1000;
 var API_ENDPOINT = 'https://demo.dot-net.in.ua/api/';
-//API_ENDPOINT = 'http://localhost:5000/api/';
+    //API_ENDPOINT = 'http://localhost:5000/api/';
 
 /**
  * Create new GUID

@@ -23,12 +23,12 @@ namespace API.Application
             }
         }
 
-        private readonly ConcurrentBag<Subscription> _subscriptions;
-        private readonly ConcurrentBag<Channel> _channels;
+        private readonly ConcurrentBag<Subscription> _subscriptions;        
+        private readonly ConcurrentDictionary<Guid, Channel> _channels;
 
         public MessageManager()
         {
-            _channels = new ConcurrentBag<Channel>();
+            _channels = new ConcurrentDictionary<Guid, Channel>();
             _subscriptions = new ConcurrentBag<Subscription>();
         }
 
@@ -40,22 +40,27 @@ namespace API.Application
 
             foreach (var subscription in subscriptions)
             {
-                var channel = _channels.SingleOrDefault(c => c.Id == subscription.ChannelId);
+                var channel = _channels
+                    .Where(c => c.Key == subscription.ChannelId)
+                    .Select(o => o.Value)
+                    .SingleOrDefault();
+
                 await channel.Send(e);
             }
         }
 
         public void RegisterChannel(Guid channelId, HttpResponse response)
         {
-            var channel = _channels.FirstOrDefault(o => o.Id == channelId);
+            var channel = _channels.FirstOrDefault(o => o.Key == channelId);
 
-            if (channel == null)
-            {                
-                _channels.Add(new Channel(channelId, response));
+
+            if (_channels.ContainsKey(channelId))
+            {
+                _channels[channelId] = new Channel(channelId, response);
             }
             else
             {
-                channel = new Channel(channelId, response);
+                _channels.TryAdd(channelId, new Channel(channelId, response));
             }
         }
 
