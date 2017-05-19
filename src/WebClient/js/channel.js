@@ -1,13 +1,13 @@
 /**
  * Initialize new channel. It should be single for page.
  */
-function Channel() {
+function Channel(endpoint) {
 
     var self = this;
 
     self.id = null;
 
-    self.apiEndpoint = 'http://localhost:5000/api/sse/';
+    self.apiEndpoint =  endpoint;
 
     self.subscribes = [];
 

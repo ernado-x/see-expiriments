@@ -3,7 +3,7 @@ document.getElementById("send-to-all-clients").addEventListener("click", functio
     var message = document.getElementById("message").value;
 
     for (var index = 1; index <= clientCount; index++) {
-        var url = 'http://localhost:5000/api/messages/send?clientId=' + index + '&message=' + message;
+        var url = API_ENDPOINT + 'messages/send?clientId=' + index + '&message=' + message;
         httpGetAsync(url);
     }
 });
@@ -11,7 +11,7 @@ document.getElementById("send-to-all-clients").addEventListener("click", functio
 document.getElementById("send-to-client").addEventListener("click", function () {
     var message = document.getElementById("message").value;
     var clientId = document.getElementById("client-id").value;
-    var url = 'http://localhost:5000/api/messages/send?clientId=' + clientId + '&message=' + message;
+    var url =  API_ENDPOINT + 'messages/send?clientId=' + clientId + '&message=' + message;
     httpGetAsync(url);
 
 });

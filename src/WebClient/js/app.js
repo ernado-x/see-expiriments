@@ -1,4 +1,4 @@
-var _channel = new Channel();
+var _channel = new Channel(API_ENDPOINT + 'sse/');
 _channel.init();
 
 var eventCount = 0;
