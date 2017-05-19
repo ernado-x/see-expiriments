@@ -49,5 +49,12 @@ namespace API.Controllers
 
             return Content("OK");
         }
+
+        [HttpGet]
+        [Route("version")]
+        public IActionResult GetVersion()
+        {
+            return Content("2.0.0");
+        }
     }
 }
