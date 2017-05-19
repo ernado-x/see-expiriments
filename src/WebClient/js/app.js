@@ -1,11 +1,13 @@
 var _channel = new Channel(API_ENDPOINT + 'sse/');
 _channel.init();
 
-var eventCount = 0;
+var _eventCount = 0;
 
 document.getElementById("clean").addEventListener("click", function () {
-    var out = document.getElementById("out");
-    out.innerHTML = '';
+    _eventCount = 0;
+
+    document.getElementById("event-count").innerText = _eventCount;
+    document.getElementById("out").innerHTML = '';
 });
 
 document.getElementById("create-clients").addEventListener("click", function () {
@@ -13,9 +15,9 @@ document.getElementById("create-clients").addEventListener("click", function () 
     for (var i = 1; i <= clientCount; i++) {
 
         var client = new Client(i, function (data) {
-            eventCount++;
+            _eventCount++;
             console.log('[' + getNowDate() + ']Received data: ' + data);
-            document.getElementById("event-count").innerText = eventCount;
+            document.getElementById("event-count").innerText = _eventCount;
         });
 
         _channel.subscribe(client);

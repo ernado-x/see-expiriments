@@ -34,18 +34,18 @@ function Channel(endpoint) {
         self.eventSource = new EventSource(self.apiEndpoint + '?channelId=' + self.id);
 
         self.eventSource.onmessage = function (obj) {
-            console.log('onmessage [' + obj + ']');
+            //console.log('onmessage [' + obj + ']');
         };
 
         self.eventSource.onopen = function (obj) {
-            console.log('onopen [' + obj + ']');
+            //console.log('onopen [' + obj + ']');
         };
 
         self.eventSource.onerror = function (obj) {
-            console.log('onerror [' + obj + ']');
+            //console.log('onerror [' + obj + ']');
 
             //if (self.eventSource.readyState ==  EventSource.CLOSED) {
-                console.log('try reconnect...');
+                console.log('Error. Trying reconnect...');
                 setTimeout(self.init, 500);
             //}
         };

@@ -49,11 +49,15 @@ namespace API.Application
 
         public void RegisterChannel(Guid channelId, HttpResponse response)
         {
-            var exist = _channels.Any(o => o.Id == channelId);
+            var channel = _channels.FirstOrDefault(o => o.Id == channelId);
 
-            if (!exist)
-            {
+            if (channel == null)
+            {                
                 _channels.Add(new Channel(channelId, response));
+            }
+            else
+            {
+                channel = new Channel(channelId, response);
             }
         }
 
