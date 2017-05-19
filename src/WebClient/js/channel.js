@@ -5,7 +5,7 @@ function Channel(endpoint) {
 
     var self = this;
 
-    self.id = null;
+    self.id = guid();
 
     self.apiEndpoint = endpoint;
 
@@ -30,7 +30,7 @@ function Channel(endpoint) {
 
 
     self.init = function () {
-        self.id = guid();
+
         self.eventSource = new EventSource(self.apiEndpoint + '?channelId=' + self.id);
 
         self.eventSource.onmessage = function (obj) {
@@ -43,6 +43,11 @@ function Channel(endpoint) {
 
         self.eventSource.onerror = function (obj) {
             console.log('onerror [' + obj + ']');
+
+            if (self.eventSource.readyState == 2) {
+                console.log('try reconnect...');
+                setTimeout(self.init, 5000);
+            }
         };
     }
 }
