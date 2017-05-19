@@ -54,7 +54,7 @@ namespace API.Controllers
         [Route("version")]
         public IActionResult GetVersion()
         {
-            return Content("2.0.1");
+            return Content("2.0.2");
         }
     }
 }

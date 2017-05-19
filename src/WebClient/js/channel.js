@@ -17,8 +17,13 @@ function Channel(endpoint) {
     self.subscribe = function (client) {
 
         self.eventSource.addEventListener(client.id, function (e) {
-            var obj = JSON.parse(e.data);
-            client.callback(obj);
+            try {
+                var obj = JSON.parse(e.data);
+                client.callback(obj);
+            }
+            catch (exception) {
+                console.warn('Exception during JSON.parse: ', exception);
+            }
         }, false);
 
         var url = this.apiEndpoint + 'subscribe?clientId=' + client.id + '&channelId=' + this.id;
@@ -45,8 +50,8 @@ function Channel(endpoint) {
             //console.log('onerror [' + obj + ']');
 
             //if (self.eventSource.readyState ==  EventSource.CLOSED) {
-                console.log('Error. Trying reconnect...');
-                setTimeout(self.init, 500);
+            console.log('Error. Trying reconnect...');
+            setTimeout(self.init, 500);
             //}
         };
     }

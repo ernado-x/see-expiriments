@@ -26,8 +26,6 @@ namespace API.Application
         private readonly ConcurrentBag<Subscription> _subscriptions;
         private readonly ConcurrentBag<Channel> _channels;
 
-        private HttpResponse _response;
-
         public MessageManager()
         {
             _channels = new ConcurrentBag<Channel>();
