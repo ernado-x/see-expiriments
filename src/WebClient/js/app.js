@@ -14,8 +14,8 @@ document.getElementById("create-clients").addEventListener("click", function () 
 
         var client = new Client(i, function (data) {
             eventCount++;
-            console.log('Received data: ' + data);
-            document.getElementById("event-count").innerText = eventCount;            
+            console.log('[' + getNowDate() + ']Received data: ' + data);
+            document.getElementById("event-count").innerText = eventCount;
         });
 
         _channel.subscribe(client);
